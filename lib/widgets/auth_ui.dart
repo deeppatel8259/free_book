@@ -42,18 +42,20 @@ class AuthUi extends StatelessWidget {
               ),),),
           SignInButton(
               Buttons.Google,text : 'Continue with Google',
-              onPressed: (){}),
+              onPressed: ()async{
+                User? user = await GoogleAuthentication.signInWithGoogle(context: context);
+                if(user!=null) {
+                  //login success
+                  PhoneAuthService _authentication = PhoneAuthService();
+                  _authentication.addUser(context, user.uid);
+                }
+                },
+          ),
           SignInButton(
             Buttons.FacebookNew,
             text: "Continue with Facebook",
-            onPressed: () async{
-              User? user = await GoogleAuthentication.signInWithGoogle(context: context);
-              if(user!=null){
-                //login success
-                PhoneAuthService _authentication = PhoneAuthService();
-                _authentication.addUser(context, user.uid);
-              }
-            },
+            onPressed: () {},
+
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
