@@ -1,9 +1,13 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:free_book/Screens/authentication/google_auth.dart';
 import 'package:free_book/Screens/authentication/phoneauth_screen.dart';
+import 'package:free_book/services/phoneauth_service.dart';
+import '../Screens/authentication/google_auth.dart';
 
 
 class AuthUi extends StatelessWidget {
@@ -11,14 +15,21 @@ class AuthUi extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
+
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             width: 220,
-            child: ElevatedButton(style:ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white)
-            )
-              ,
+
+            child: ElevatedButton(
+              style:ElevatedButton.styleFrom(
+                primary: Colors.white,
+                shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(3.0),
+
+
+              ),),
+
               onPressed: (){
                 Navigator.pushNamed(context, PhoneAuthScreen.id);
 
@@ -30,11 +41,19 @@ class AuthUi extends StatelessWidget {
                 ],
               ),),),
           SignInButton(
-              Buttons.Google,text : 'Continue with Google', onPressed: (){}),
+              Buttons.Google,text : 'Continue with Google',
+              onPressed: (){}),
           SignInButton(
             Buttons.FacebookNew,
             text: "Continue with Facebook",
-            onPressed: () {},
+            onPressed: () async{
+              User? user = await GoogleAuthentication.signInWithGoogle(context: context);
+              if(user!=null){
+                //login success
+                PhoneAuthService _authentication = PhoneAuthService();
+                _authentication.addUser(context, user.uid);
+              }
+            },
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
