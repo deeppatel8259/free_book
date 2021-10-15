@@ -42,12 +42,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          automaticallyImplyLeading: false,
           title: InkWell(
             child: Container(
               width: MediaQuery.of(context).size.width,
 
               child: Padding(
                 padding: const EdgeInsets.only(top: 8,bottom: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
                 child: Row(
                   children: [
                     Icon(
@@ -67,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(Icons.keyboard_arrow_down_outlined,color: Colors.black,size: 18,),
                   ],
                 ),
-              )
+              ),),
             ),
           )
         ),

@@ -1,6 +1,7 @@
 // @dart=2.9
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:free_book/Screens/authentication/email_auth_screen.dart';
 import 'package:free_book/Screens/home_screen.dart';
 import 'Screens/home_screen.dart';
 import 'Screens/SplashScreen.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         PhoneAuthScreen.id: (context) => PhoneAuthScreen(),
         LocationScreen.id: (context) => LocationScreen(),
         HomeScreen.id: (context) => HomeScreen(locationData: locationData,),
+        EmailAuthScreen.id: (context) => EmailAuthScreen(),
       },
     );
 
