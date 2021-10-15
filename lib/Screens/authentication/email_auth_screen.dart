@@ -119,6 +119,12 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(
+                  suffixIcon:_validate ? IconButton( icon: Icon(Icons.clear),onPressed: (){
+                    _passwordController.clear();
+                    setState(() {
+                      _validate = false;
+                    });
+                  },):null ,
                   contentPadding: EdgeInsets.only(left: 10),
                   labelText: 'Password',
                   filled: true,
