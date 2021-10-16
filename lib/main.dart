@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:free_book/Screens/authentication/email_auth_screen.dart';
 import 'package:free_book/Screens/authentication/email_verification_screen.dart';
+import 'package:free_book/Screens/authentication/reset_password_screen.dart';
 import 'package:free_book/Screens/home_screen.dart';
 import 'Screens/home_screen.dart';
 import 'Screens/SplashScreen.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         LocationScreen.id: (context) => LocationScreen(),
         HomeScreen.id: (context) => HomeScreen(locationData: locationData,),
         EmailAuthScreen.id: (context) => EmailAuthScreen(),
-        EmailVerificationScreen.id: (context) => EmailVerificationScreen(),
+        PasswordResetScreen.id: (context) => PasswordResetScreen(),
       },
     );
 
