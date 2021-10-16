@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:free_book/Screens/authentication/email_verification_screen.dart';
 import 'package:free_book/Screens/location_screen.dart';
 
 
@@ -58,8 +59,11 @@ class EmailAuthentication{
           'uid' : userCredential.user!.uid,
           'mobile' : null,
           'email' : userCredential.user!.email
-        }).then((value) {
-          Navigator.pushReplacementNamed(context, LocationScreen.id);
+        }).then((value) async {
+          await userCredential.user!.sendEmailVerification().then((value) {
+            Navigator.pushReplacementNamed(context, EmailVerificationScreen.id);
+          });
+
         }).catchError((onError){
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Failed to add user'),),

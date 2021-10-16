@@ -37,6 +37,7 @@ dependencies:
   geocoder:
   google_sign_in:
   email_validator:
+  open_mail_app:
 
 dev_dependencies:
   flutter_test:

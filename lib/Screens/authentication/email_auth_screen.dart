@@ -29,12 +29,13 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
         _loading = true;
       });
 
-      _service.getAdminCredential(
-        context: context,
-        isLog: _login,
-        password: _passwordController.text,
-        email: _emailController.text
-      ).then((value) {
+      _service
+          .getAdminCredential(
+              context: context,
+              isLog: _login,
+              password: _passwordController.text,
+              email: _emailController.text)
+          .then((value) {
         setState(() {
           _loading = false;
         });
@@ -117,14 +118,20 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                 height: 10,
               ),
               TextFormField(
+                obscureText: true,
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  suffixIcon:_validate ? IconButton( icon: Icon(Icons.clear),onPressed: (){
-                    _passwordController.clear();
-                    setState(() {
-                      _validate = false;
-                    });
-                  },):null ,
+                  suffixIcon: _validate
+                      ? IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            _passwordController.clear();
+                            setState(() {
+                              _validate = false;
+                            });
+                          },
+                        )
+                      : null,
                   contentPadding: EdgeInsets.only(left: 10),
                   labelText: 'Password',
                   filled: true,
@@ -150,13 +157,22 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
               SizedBox(
                 height: 10,
               ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'Forgot password?',
+                  style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),
+                ),
+              ),
               Row(
                 children: [
                   Text(_login ? 'New Account ?' : 'Already has an Account?'),
                   TextButton(
                     child: Text(
                       _login ? 'Register' : 'Login',
-                      style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold),
                     ),
                     onPressed: () {
                       setState(() {
