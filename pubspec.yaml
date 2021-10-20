@@ -38,6 +38,7 @@ dependencies:
   google_sign_in:
   email_validator:
   open_mail_app:
+  csc_picker:
 
 dev_dependencies:
   flutter_test:
