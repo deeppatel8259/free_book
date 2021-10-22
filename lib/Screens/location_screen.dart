@@ -145,12 +145,12 @@ class _LocationScreenState extends State<LocationScreen> {
                     },
                     onStateChanged: (value) {
                       setState(() {
-                        stateValue = value!;
+                        stateValue = value.toString();
                       });
                     },
                     onCityChanged: (value) {
                       setState(() {
-                        cityValue = value!;
+                        cityValue = value.toString();
                         address = '$cityValue,$stateValue,${countryValue.substring(8)}';
                       });
                       print(address);
