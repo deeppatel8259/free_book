@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:free_book/services/phoneauth_service.dart';
+import 'package:legacy_progress_dialog/legacy_progress_dialog.dart';
 
 
 
@@ -21,13 +22,13 @@ class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
   @override
   Widget build(BuildContext context) {
     //Create an instance of ProgressDialog
-    /*ProgressDialog progressDialog = ProgressDialog(
+    ProgressDialog progressDialog = ProgressDialog(
       context: context,
       backgroundColor: Colors.white,
       textColor: Colors.black,
       loadingText: 'Please wait',
       progressIndicatorColor: Theme.of(context).primaryColor,
-    );*/
+    );
     return Scaffold(
       appBar: AppBar(
         elevation: 1,

@@ -39,6 +39,7 @@ dependencies:
   email_validator:
   open_mail_app:
   csc_picker:
+  legacy_progress_dialog:
 
 dev_dependencies:
   flutter_test:
