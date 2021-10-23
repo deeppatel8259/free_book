@@ -182,7 +182,11 @@ class _LocationScreenState extends State<LocationScreen> {
                         onCityChanged: (value) {
                           setState(() {
                             if(stateValue==""){
-                              return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Select state...')));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Select state..'),
+                                ),
+                              );
                             }
                             cityValue = value.toString();
                             _address =
