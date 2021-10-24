@@ -1,9 +1,11 @@
 
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:free_book/Screens/home_screen.dart';
+import 'package:free_book/services/firebase_services.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:legacy_progress_dialog/legacy_progress_dialog.dart';
 import 'package:location/location.dart';
@@ -16,7 +18,10 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  bool _loading = false;
+
+  FirebaseService _service = FirebaseService();
+
+  bool _loading = true;
   Location location = new Location();
 
 
@@ -28,6 +33,7 @@ class _LocationScreenState extends State<LocationScreen> {
   String countryValue = "";
   String stateValue = "";
   String cityValue = "";
+  late String manualaddess;
 
 
   Future<LocationData?> getLocation() async {
@@ -63,6 +69,24 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _service.users
+        .doc(_service.user!.uid)
+        .get()
+        .then((DocumentSnapshot document) {
+      if (document.exists) {
+        if(document['address']!=null){
+          setState(() {
+            _loading = true;
+          });
+          Navigator.pushNamed(context, HomeScreen.id);
+        }
+      }else{
+        setState(() {
+          _loading = false;
+        });
+      }
+    });
 
     ProgressDialog progressDialog = ProgressDialog(
       context: context,
@@ -130,7 +154,20 @@ class _LocationScreenState extends State<LocationScreen> {
                       ),
                     ),
                     ListTile(
-                      onTap: () {},
+                      onTap: () {
+                        progressDialog.show();
+                        getLocation().then((value) {
+                          if(value!=null){
+                            _service.updateUser({
+                              'location' : GeoPoint(value.latitude!, value.longitude!),
+                              'address' : _address
+                            }, context).then((value) {
+                              progressDialog.dismiss();
+                              Navigator.pushNamed(context, HomeScreen.id);
+                            });
+                          }
+                        });
+                      },
                       horizontalTitleGap: 0.0,
                       leading: Icon(
                         Icons.my_location,
@@ -166,6 +203,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: CSCPicker(
                         layout: Layout.vertical,
+                        flagState: CountryFlag.DISABLE,
                         dropdownDecoration: BoxDecoration(
                             shape: BoxShape.rectangle),
                         defaultCountry: DefaultCountry.India,
@@ -181,18 +219,21 @@ class _LocationScreenState extends State<LocationScreen> {
                         },
                         onCityChanged: (value) {
                           setState(() {
-                            if(stateValue==""){
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Select state..'),
-                                ),
-                              );
-                            }
+
                             cityValue = value.toString();
-                            _address =
-                            '$cityValue,$stateValue,${countryValue.substring(
-                                8)}';
+                            setState(() {
+                              manualaddess =
+                              '$cityValue,$stateValue,$countryValue';
+                            });
                           });
+                          if(value!=null){
+                            _service.updateUser({
+                              'address' : manualaddess,
+                              'state' : stateValue,
+                              'city' : cityValue,
+                              'country' : countryValue,
+                            }, context);
+                          }
                         },
                       ),
                     )
@@ -204,7 +245,6 @@ class _LocationScreenState extends State<LocationScreen> {
         }
       });
     }
-
 
 
 
@@ -234,69 +274,72 @@ class _LocationScreenState extends State<LocationScreen> {
           SizedBox(
             height: 30,
           ),
-          Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _loading
-                        ? Center(
+          _loading ? Column(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 12,),
+              Text('Fetching location...')
+            ],
+          ) : Column(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _loading
+                            ? Center(
                             child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).primaryColor),
-                          ))
-                        : ElevatedButton.icon(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              valueColor: AlwaysStoppedAnimation<Color>(
                                   Theme.of(context).primaryColor),
-                            ),
-                            icon: Icon(CupertinoIcons.location_fill),
-                            label: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15, bottom: 15),
-                              child: Text(
-                                'Around me',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _loading = true;
-                              });
-                              getLocation().then((value) {
-                                print(_locationData.latitude);
-                                if (value != null) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          HomeScreen(
-                                              locationData: _locationData),
-                                    ),
-                                  );
-                                }
-                              });
-                            },
+                            ))
+                            : ElevatedButton.icon(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Theme.of(context).primaryColor),
                           ),
-                  ),
-                ],
-              )),
-          InkWell(
-            onTap: () {
-              progressDialog.show();
-              showBottomScreen(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration:
+                          icon: Icon(CupertinoIcons.location_fill),
+                          label: Padding(
+                            padding:
+                            const EdgeInsets.only(top: 15, bottom: 15),
+                            child: Text(
+                              'Around me',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          onPressed: () {
+                            progressDialog.show();
+                            getLocation().then((value) {
+                              if (value != null) {
+                                _service.updateUser({
+                                  'address' : _address,
+                                  'location': GeoPoint(value.latitude!,value.longitude!),
+                                }, context);
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  )),
+              InkWell(
+                onTap: () {
+                  progressDialog.show();
+                  showBottomScreen(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration:
                     BoxDecoration(border: Border(bottom: BorderSide(width: 2))),
-                child: Text(
-                  'Set Location manually',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    child: Text(
+                      'Set Location manually',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           )
         ],
       ),

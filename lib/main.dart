@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         PhoneAuthScreen.id: (context) => PhoneAuthScreen(),
         LocationScreen.id: (context) => LocationScreen(),
-        HomeScreen.id: (context) => HomeScreen(locationData: locationData,),
+        //HomeScreen.id: (context) => HomeScreen(locationData: locationData,),
         EmailAuthScreen.id: (context) => EmailAuthScreen(),
         PasswordResetScreen.id: (context) => PasswordResetScreen(),
       },
