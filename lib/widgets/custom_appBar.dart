@@ -25,26 +25,22 @@ class CustomAppBar extends StatelessWidget {
           return Text("Address not selected");
         }
 
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
 
           if(data['address']==null){
-              GeoPoint latLong = data['location'];
-              _service.getAddress(latLong.latitude,latLong.longitude).then((adres) {
-                return appBar(adres, context);
-              });
+              if(data['state']==null)
+                {
+                  GeoPoint latLong = data['location'];
+                  _service.getAddress(latLong.latitude,latLong.longitude).then((adres) {
+                    appBar(adres, context);
+                  });
+                }
           }else{
             return appBar(data['address'], context);
           }
         }
-        print(snapshot.connectionState);
-       return Container(
-         height: 56,
-         child: Padding(
-           padding: const EdgeInsets.all(8.0),
-           child:  Text("Fetching Location"),
-         ),
-       );
+        return Text("Fetching location..");
       },
     );
   }

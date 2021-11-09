@@ -12,12 +12,32 @@ import 'location_screen.dart';
 class HomeScreen extends StatefulWidget {
   static const String id = 'home-screen';
 
+  final LocationData locationData;
+
+  HomeScreen({required this.locationData});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   String address = 'India';
+
+  Future<String> getAddress() async{
+    final coordinates = new Coordinates(widget.locationData.latitude, widget.locationData.longitude);
+    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var first = addresses.first;
+    setState(() {
+      address = first.addressLine;
+    });
+    return first.addressLine;
+  }
+
+  @override
+  void initstate(){
+    getAddress();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
