@@ -1,6 +1,6 @@
 # free_book
 
-A new Flutter project.
+Flutter project.
 
 ## Getting Started
 
